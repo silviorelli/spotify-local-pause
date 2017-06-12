@@ -1,0 +1,18 @@
+{
+  "name": "spotify-local-pause",
+  "version": "1.0.0",
+  "description": "Add a pause between tracks when playing Spotify albums or playlists",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "spotify"
+  ],
+  "author": "Silvio Relli",
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^4.0.0",
+    "spotify-control": "^0.1.0"
+  }
+}
