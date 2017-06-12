@@ -23,7 +23,7 @@ spotify.connect().then(v => {
       lastSongUri = currentSongUri;
       spotify.pause(true);
       
-      setTimeout(function(){ 
+      setTimeout(() => { 
         console.log("Resuming music!");
         spotify.pause(false);
       }, PAUSE);
@@ -35,7 +35,6 @@ spotify.connect().then(v => {
     console.log("Playing resource.");
     spotify.play(RESOURCE);
   }
-  
 }, err => {
   console.error("Failed to start: " + err.message);
-})
+});
