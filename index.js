@@ -1,25 +1,42 @@
 require('dotenv').config();
 const SpotifyControl = require('spotify-control');
 
-TOKEN = process.env.TOKEN;
-PLAYLIST = process.env.PLAYLIST;
+const TOKEN = process.env.TOKEN;
+const RESOURCE = process.env.RESOURCE;
+const PAUSE = process.env.PAUSE;
 
-var spotify = new SpotifyControl({
-    token: TOKEN
+const spotify = new SpotifyControl({
+  token: TOKEN
 });
 
 spotify.connect().then(v => {
-    console.log("Started");
+  console.log("Connected.");
+  let lastSongUri = "";
 
-    spotify.play(PLAYLIST).then(v => {
-        console.log("Played");
-        spotify.startListener(["play", "pause"]).on("event", data => {
-            console.log(JSON.stringify(data, null, 4));
-        });
-    }, err => {
-        console.error(err);
+  spotify.play(RESOURCE).then(v => {
+    console.log("Playing playlist...");
+    spotify.startListener(["play", "pause"]).on("event", data => {
+
+      // let currentSongDebug = JSON.stringify(data, null, 4);
+      // console.log(currentSongDebug, "\n--------------------------\n");
+
+      const currentSongUri = data.track.track_resource.uri;
+      if (currentSongUri !== lastSongUri) {
+        console.log("New song, pausing for a moment...");
+        console.log(data.track.track_resource.name, " - ", data.track.artist_resource.name);
+        lastSongUri = currentSongUri;
+        spotify.pause(true);
+        
+        setTimeout(function(){ 
+          console.log("Resuming music!");
+          spotify.pause(false);
+        }, PAUSE);
+      }
+      
     });
+  }, err => {
+    console.error(err);
+  });
 }, err => {
-    console.error("Failed to start: " + err.message);
+  console.error("Failed to start: " + err.message);
 })
-
