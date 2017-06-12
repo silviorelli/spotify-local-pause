@@ -10,33 +10,32 @@ const spotify = new SpotifyControl({
 });
 
 spotify.connect().then(v => {
-  console.log("Connected.");
+  console.log("Listening to track changes.");
   let lastSongUri = "";
+  spotify.startListener(["play", "pause"]).on("event", data => {
+    // let currentSongDebug = JSON.stringify(data, null, 4);
+    // console.log(currentSongDebug, "\n--------------------------\n");
 
-  spotify.play(RESOURCE).then(v => {
-    console.log("Playing playlist...");
-    spotify.startListener(["play", "pause"]).on("event", data => {
-
-      // let currentSongDebug = JSON.stringify(data, null, 4);
-      // console.log(currentSongDebug, "\n--------------------------\n");
-
-      const currentSongUri = data.track.track_resource.uri;
-      if (currentSongUri !== lastSongUri) {
-        console.log("New song, pausing for a moment...");
-        console.log(data.track.track_resource.name, " - ", data.track.artist_resource.name);
-        lastSongUri = currentSongUri;
-        spotify.pause(true);
-        
-        setTimeout(function(){ 
-          console.log("Resuming music!");
-          spotify.pause(false);
-        }, PAUSE);
-      }
+    const currentSongUri = data.track.track_resource.uri;
+    if (currentSongUri !== lastSongUri) {
+      console.log("New song, pausing for a moment...");
+      console.log(data.track.track_resource.name, " - ", data.track.artist_resource.name);
+      lastSongUri = currentSongUri;
+      spotify.pause(true);
       
-    });
-  }, err => {
-    console.error(err);
+      setTimeout(function(){ 
+        console.log("Resuming music!");
+        spotify.pause(false);
+      }, PAUSE);
+    }
+    
   });
+
+  if (RESOURCE) {
+    console.log("Playing resource.");
+    spotify.play(RESOURCE);
+  }
+  
 }, err => {
   console.error("Failed to start: " + err.message);
 })
